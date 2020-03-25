@@ -30,15 +30,17 @@ services:
     container_name: db
     restart: unless-stopped
     volumes:
-      - ./.docker/conf/mysql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+      - ./.docker/conf/mysql/docker-entrypoint-initdb.d/create_test_database.sql:/docker-entrypoint-initdb.d/create_test_database.sql
       - db_volume:/var/lib/mysql
       - ./.docker/logs/mysql:/var/log/mysql
     environment:
+      # When changing the MYSQL_USER value, don't forget to change it also in the following file:
+      #  .docker/conf/mysql/docker-entrypoint-initdb.d/create_test_database.sql
       MYSQL_ROOT_PASSWORD: "KxxLtk8GoI0Fx7JkCWBDZQGW9CPFJjC1"
       MYSQL_DATABASE: "laravel_db"
       MYSQL_USER: "laravel_db_user"
       MYSQL_PASSWORD: "laravel_db_pass"
-    command: mysqld --sql_mode="" --init-file=/docker-entrypoint-initdb.d/create_database.sql
+    command: mysqld --sql_mode=""
     ports:
       - "3306:3306"
 

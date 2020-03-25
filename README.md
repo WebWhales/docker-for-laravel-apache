@@ -12,11 +12,11 @@ When using our template files, follow these steps to start using this image:
 * In the `docker-compose.yml`:
   * Change container names when using multiple docker set ups simultaneously
   * Change the `hostname` directives
-    * <small>Tip: the *.localhost tld points to your local machine automatically on Windows</small>
+    * Tip: the *.localhost tld points to your local machine automatically on Windows
   * Change ports when necessary
-  * Change the database root password when necessary
+  * Change the database details and/or root password when necessary
     * The database root password is used by phpMyAdmin
-    * When you change the database name and/or user, make sure to also change these in the `.docker/conf/mysql/docker-entrypoint-initdb.d/create_database.sql` file
+    * When you change the database user, make sure to also change it in the `.docker/conf/mysql/docker-entrypoint-initdb.d/create_test_database.sql` file
 * Run `docker-compose up -d` from the root of your project directory
 
 
