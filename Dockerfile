@@ -1,4 +1,4 @@
-FROM php:7.3-apache
+FROM php:7.0-apache
 
 # Install the packages we need
 RUN apt-get update && apt-get -y install \
