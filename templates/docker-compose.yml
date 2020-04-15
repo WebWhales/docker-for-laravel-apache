@@ -7,7 +7,7 @@ services:
 
   # Apache / PHP
   web:
-    image: webwhales/for-laravel-apache:php7.0
+    image: webwhales/for-laravel-apache:php7
     container_name: web
     hostname: domain.localhost
     restart: unless-stopped
