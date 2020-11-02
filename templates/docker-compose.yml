@@ -9,7 +9,6 @@ services:
   web:
     image: webwhales/for-laravel-apache:latest
     #image: webwhales/for-laravel-apache:php7.3
-    container_name: web
     hostname: domain.localhost
     restart: unless-stopped
     volumes:
@@ -27,7 +26,6 @@ services:
   # MySQL
   db:
     image: mariadb:10.4
-    container_name: db
     restart: unless-stopped
     volumes:
       - ./.docker/conf/mysql/docker-entrypoint-initdb.d/create_test_database.sql:/docker-entrypoint-initdb.d/create_test_database.sql
@@ -40,14 +38,12 @@ services:
       MYSQL_DATABASE: "laravel_db"
       MYSQL_USER: "laravel_db_user"
       MYSQL_PASSWORD: "laravel_db_pass"
-    command: mysqld --sql_mode=""
     ports:
       - "3306:3306"
 
   # phpMyAdmin
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
-    container_name: phpmyadmin
     hostname: domain-pma.localhost
     restart: unless-stopped
     volumes:
