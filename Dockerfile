@@ -1,4 +1,4 @@
-FROM php:7.4-apache
+FROM php:7-apache
 
 # Install the packages we need
 RUN apt-get update && apt-get -y install \
