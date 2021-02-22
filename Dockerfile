@@ -105,7 +105,7 @@ RUN openssl req -x509 \
 #
 # Install Composer
 #
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer --1
 RUN export PATH="$PATH:$HOME/.composer/vendor/bin"
 
 
