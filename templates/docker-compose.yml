@@ -8,7 +8,7 @@ services:
   # Apache / PHP
   web:
     image: webwhales/for-laravel-apache:latest
-    #image: webwhales/for-laravel-apache:php7.3
+    #image: webwhales/for-laravel-apache:php8.0
     hostname: domain.localhost
     restart: unless-stopped
     volumes:
