@@ -8,7 +8,6 @@ services:
   # Apache / PHP
   web:
     image: webwhales/for-laravel-apache:latest
-    #image: webwhales/for-laravel-apache:php8.0
     hostname: domain.localhost
     restart: unless-stopped
     volumes:
@@ -19,13 +18,12 @@ services:
       - ./:/var/www/html
     ports:
       - "8080:80"
-      - "8081:443"
     links:
       - db
 
   # MySQL
   db:
-    image: mariadb:10.4
+    image: mariadb:10.5
     restart: unless-stopped
     volumes:
       - ./.docker/conf/mysql/docker-entrypoint-initdb.d/create_test_database.sql:/docker-entrypoint-initdb.d/create_test_database.sql
@@ -51,7 +49,7 @@ services:
       - ./.docker/data/phpmyadmin/sessions:/sessions
       - ./.docker/data/phpmyadmin/uploads:/var/uploads
     ports:
-      - "8082:80"
+      - "8081:80"
     environment:
       PMA_ARBITRARY: "1"
       PMA_HOST: "db"
