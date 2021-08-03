@@ -112,7 +112,7 @@ RUN export PATH="$PATH:$HOME/.composer/vendor/bin"
 #
 # Install NodeJS
 #
-RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
+RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
 RUN apt-get update && apt-get install -y nodejs
 RUN nodejs -v
 RUN export PATH="$PATH:/usr/src/app/node_modules/.bin"
