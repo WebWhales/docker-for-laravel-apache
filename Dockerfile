@@ -105,8 +105,7 @@ RUN openssl req -x509 \
 #
 # Install Composer
 #
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer --1
-RUN export PATH="$PATH:$HOME/.composer/vendor/bin"
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 
 #
@@ -135,6 +134,8 @@ RUN yarn global add @ionic/cli @vue/cli cordova gulp-cli gulp vue-native-cli rea
 #
 RUN composer global require laravel/installer
 
+
+ENV PATH "$PATH:$HOME/.composer/vendor/bin"
 
 EXPOSE 80 443
 
