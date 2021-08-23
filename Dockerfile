@@ -105,16 +105,15 @@ RUN openssl req -x509 \
 #
 # Install Composer
 #
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer --1
-RUN export PATH="$PATH:$HOME/.composer/vendor/bin"
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 
 #
 # Install NodeJS
 #
-RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
-RUN apt-get update && apt-get install -y nodejs
-RUN nodejs -v
+RUN curl -fsSL https://deb.nodesource.com/setup_12.x | bash -
+RUN apt-get install -y nodejs
+RUN node --version
 RUN export PATH="$PATH:/usr/src/app/node_modules/.bin"
 
 
@@ -135,6 +134,8 @@ RUN yarn global add @ionic/cli @vue/cli cordova gulp-cli gulp vue-native-cli rea
 #
 RUN composer global require laravel/installer
 
+
+ENV PATH "$PATH:$HOME/.composer/vendor/bin"
 
 EXPOSE 80 443
 
