@@ -14,7 +14,8 @@ RUN apt-get update && apt-get -y install \
     libjpeg-dev \
     libmagickwand-dev \
     libmcrypt-dev \
-    libpng-dev \
+	libpng-dev \
+	libwebp-dev \
     libreadline-dev \
     libssl-dev \
     libxslt1-dev \
@@ -33,17 +34,23 @@ RUN mkdir -p /var/log/apache2 && \
     mkdir -p /var/log/supervisor \
     mkdir -p /var/www/dummy
 
-RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-png-dir=/usr/include/ --with-jpeg-dir=/usr/include/; \
-    docker-php-ext-install -j$(nproc) gd; \
-    docker-php-ext-configure intl; \
-    docker-php-ext-install -j$(nproc) intl; \
+RUN set -eux; \
+    pecl install redis && docker-php-ext-enable redis; \
+    yes '' | pecl install imagick && docker-php-ext-enable imagick; \
+	docker-php-ext-configure gd --enable-gd --with-freetype --with-jpeg --with-webp; \
+	docker-php-ext-configure intl; \
+	docker-php-ext-configure mysqli --with-mysqli=mysqlnd; \
+	docker-php-ext-configure pdo_mysql --with-pdo-mysql=mysqlnd; \
+	docker-php-ext-configure zip; \
     docker-php-ext-install -j$(nproc) \
         bcmath \
         bz2 \
         calendar \
         exif \
+    	gd \
         gettext \
         iconv \
+        intl \
         mysqli  \
         opcache \
         pdo_mysql \
@@ -51,9 +58,6 @@ RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-png-dir
         sockets \
         xsl \
         zip; \
-    pecl install redis && docker-php-ext-enable redis; \
-    yes '' | pecl install imagick && docker-php-ext-enable imagick \
-    docker-php-source delete; \
     apt-get autoremove --purge -y && apt-get autoclean -y && apt-get clean -y; \
     rm -rf /var/lib/apt/lists/*; \
     rm -rf /tmp/* /var/tmp/*
@@ -106,7 +110,7 @@ RUN openssl req -x509 \
 # Install Composer
 #
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer --1
-RUN export PATH="$PATH:$HOME/.composer/vendor/bin"
+RUN export PATH="$PATH:$HOME/.composer/vendor/bin:/root/.composer/vendor/bin"
 
 
 #
@@ -114,7 +118,7 @@ RUN export PATH="$PATH:$HOME/.composer/vendor/bin"
 #
 RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
 RUN apt-get update && apt-get install -y nodejs
-RUN nodejs -v
+RUN node -v
 RUN export PATH="$PATH:/usr/src/app/node_modules/.bin"
 
 
