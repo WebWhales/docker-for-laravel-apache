@@ -15,52 +15,51 @@ RUN apt-get update && apt-get -y install \
     libmagickwand-dev \
     libmcrypt-dev \
     libpng-dev \
+	libwebp-dev \
     libreadline-dev \
     libssl-dev \
-    libxslt1-dev \
     libzip-dev \
     make \
     openssl \
     pkg-config \
     supervisor \
-    unzip \
-    wget \
-    zip \
-    zlib1g-dev
+    wget
 
 RUN mkdir -p /var/log/apache2 && \
     mkdir -p /var/log/php && \
-    mkdir -p /var/log/supervisor \
+    mkdir -p /var/log/supervisor && \
     mkdir -p /var/www/dummy
 
-RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-png-dir=/usr/include/ --with-jpeg-dir=/usr/include/; \
-    docker-php-ext-install -j$(nproc) gd; \
-    docker-php-ext-configure intl; \
-    docker-php-ext-install -j$(nproc) intl; \
-    docker-php-ext-install -j$(nproc) \
-        bcmath \
-        bz2 \
-        calendar \
-        exif \
-        gettext \
-        iconv \
-        mysqli  \
-        opcache \
-        pdo_mysql \
-        soap \
-        sockets \
-        xsl \
-        zip; \
-    pecl install redis && docker-php-ext-enable redis; \
-    yes '' | pecl install imagick && docker-php-ext-enable imagick \
-    docker-php-source delete; \
-    apt-get autoremove --purge -y && apt-get autoclean -y && apt-get clean -y; \
-    rm -rf /var/lib/apt/lists/*; \
-    rm -rf /tmp/* /var/tmp/*
+# Install PHP packages
+RUN docker-php-ext-configure gd --enable-gd --with-freetype --with-jpeg --with-webp \
+    && docker-php-ext-configure intl \
+    && docker-php-ext-install -j$(nproc) \
+           bcmath \
+           bz2 \
+           calendar \
+           exif \
+           gd \
+           gettext \
+           iconv \
+           intl \
+           mysqli  \
+           opcache \
+           pdo_mysql \
+           soap \
+    && pecl install redis && docker-php-ext-enable redis \
+    && yes '' | pecl install imagick && docker-php-ext-enable imagick \
+    && docker-php-source delete \
+    && apt-get autoremove --purge -y && apt-get autoclean -y && apt-get clean -y \
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /tmp/* /var/tmp/*
 
-# Install the packages we need. We do this here, because unused packages are removed above
-RUN apt-get update && apt-get -y install \
-    nano
+# Install xsl and zip packages
+RUN apt-get update && apt-get -y install libxslt1-dev libzip-dev zlib1g-dev zip \
+    && docker-php-ext-install -j$(nproc) xsl zip
+
+# Install sockets
+RUN CFLAGS="$CFLAGS -D_GNU_SOURCE" docker-php-ext-install sockets
+
 
 
 # set recommended PHP.ini settings
@@ -87,6 +86,10 @@ RUN { \
 RUN a2enmod rewrite headers expires
 
 
+# Install additional software. We do this here, because unused packages are removed above
+RUN apt-get update && apt-get -y install nano unzip
+
+
 # Copy suporvisor config
 COPY config/supervisor/supervisord.conf /etc/supervisord.conf
 
@@ -106,15 +109,16 @@ RUN openssl req -x509 \
 # Install Composer
 #
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+RUN export PATH="$PATH:$HOME/.composer/vendor/bin:/root/.composer/vendor/bin"
 
 
 #
 # Install NodeJS
 #
 RUN curl -fsSL https://deb.nodesource.com/setup_12.x | bash -
-RUN apt-get install -y nodejs
-RUN node --version
-RUN export PATH="$PATH:/usr/src/app/node_modules/.bin"
+RUN apt-get install -y nodejs \
+    && node --version \
+    && export PATH="$PATH:/usr/src/app/node_modules/.bin"
 
 
 #
@@ -126,7 +130,7 @@ RUN npm -g install yarn
 #
 # Install some node tools globally
 #
-RUN yarn global add @ionic/cli @vue/cli cordova gulp-cli gulp vue-native-cli react-native-cli
+RUN yarn global add @vue/cli
 
 
 #
@@ -135,7 +139,7 @@ RUN yarn global add @ionic/cli @vue/cli cordova gulp-cli gulp vue-native-cli rea
 RUN composer global require laravel/installer
 
 
-ENV PATH "$PATH:$HOME/.composer/vendor/bin"
+ENV PATH "$PATH"
 
 EXPOSE 80 443
 
