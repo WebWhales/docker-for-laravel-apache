@@ -25,7 +25,7 @@ When using our template files, follow these steps to start using this image:
 * The `web` container contains the following command line tools:
   * `composer`
   * `nano`
-  * `nodejs`, `npm` and `yarn`
+  * `nodejs`, `npm`, `yarn` and `n`
   * `@ionic/cli`, `@vue/cli`, `cordova`, `gulp-cli`, `gulp`, `vue-native-cli` and `react-native-cli`
   * `laravel/installer`
   * `supervisor`

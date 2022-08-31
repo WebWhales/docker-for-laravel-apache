@@ -111,16 +111,16 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 #
 # Install NodeJS
 #
-RUN curl -fsSL https://deb.nodesource.com/setup_12.x | bash -
+RUN curl -fsSL https://deb.nodesource.com/setup_14.x | bash -
 RUN apt-get install -y nodejs
 RUN node --version
 RUN export PATH="$PATH:/usr/src/app/node_modules/.bin"
 
 
 #
-# Installing Yarn globally
+# Installing Yarn and n globally
 #
-RUN npm -g install yarn
+RUN npm -g install yarn n
 
 
 #
