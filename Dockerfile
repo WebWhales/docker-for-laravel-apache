@@ -50,16 +50,24 @@ RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-png-dir
         soap \
         sockets \
         xsl \
-        zip; \
-    pecl install redis && docker-php-ext-enable redis; \
+        zip
+RUN pecl install redis xdebug && docker-php-ext-enable redis; \
     yes '' | pecl install imagick && docker-php-ext-enable imagick \
+    pecl install xdebug && docker-php-ext-enable xdebug; \
+    echo "xdebug.mode=debug" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
+    echo "xdebug.remote_enable=1" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
+    echo "xdebug.discover_client_host=false" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
+    echo "xdebug.client_host=host.docker.internal" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
+    echo "xdebug.start_with_request=trigger" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
+    echo "xdebug.idekey=PHPSTORM" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
     docker-php-source delete; \
     apt-get autoremove --purge -y && apt-get autoclean -y && apt-get clean -y; \
     rm -rf /var/lib/apt/lists/*; \
     rm -rf /tmp/* /var/tmp/*
 
-# Install the packages we need. We do this here, because unused packages are removed above
+# Install the packages we need to persist. We do this here, because unused packages are removed above
 RUN apt-get update && apt-get -y install \
+    mariadb-client \
     nano
 
 
