@@ -15,51 +15,57 @@ RUN apt-get update && apt-get -y install \
     libmagickwand-dev \
     libmcrypt-dev \
     libpng-dev \
-	libwebp-dev \
+    libwebp-dev \
     libreadline-dev \
     libssl-dev \
+    libxslt1-dev \
     libzip-dev \
     make \
     openssl \
     pkg-config \
     supervisor \
-    wget
+    unzip \
+    wget \
+    zip \
+    zlib1g-dev
 
-RUN mkdir -p /var/log/apache2 && \
-    mkdir -p /var/log/php && \
-    mkdir -p /var/log/supervisor && \
-    mkdir -p /var/www/dummy
+RUN mkdir -p /var/log/apache2 \
+             /var/log/php \
+             /var/log/supervisor \
+             /var/www/dummy
 
 # Install PHP packages
-RUN docker-php-ext-configure gd --enable-gd --with-freetype --with-jpeg --with-webp \
-    && docker-php-ext-configure intl \
-    && docker-php-ext-install -j$(nproc) \
-           bcmath \
-           bz2 \
-           calendar \
-           exif \
-           gd \
-           gettext \
-           iconv \
-           intl \
-           mysqli  \
-           opcache \
-           pdo_mysql \
-           soap \
-    && pecl install redis && docker-php-ext-enable redis \
-    && yes '' | pecl install imagick && docker-php-ext-enable imagick \
-    && docker-php-source delete \
-    && apt-get autoremove --purge -y && apt-get autoclean -y && apt-get clean -y \
-    && rm -rf /var/lib/apt/lists/* \
-    && rm -rf /tmp/* /var/tmp/*
+RUN docker-php-ext-configure gd --enable-gd --with-freetype --with-jpeg --with-webp; \
+    docker-php-ext-configure intl; \
+    docker-php-ext-install -j$(nproc) \
+      bcmath \
+      bz2 \
+      calendar \
+      exif \
+      gd \
+      gettext \
+      iconv \
+      intl \
+      mysqli  \
+      opcache \
+      pdo_mysql \
+      soap \
+      sockets \
+      xsl \
+      zip
+RUN pecl install redis xdebug && docker-php-ext-enable redis
+RUN yes '' | pecl install imagick && docker-php-ext-enable imagick
+RUN docker-php-ext-enable xdebug
+RUN docker-php-source delete; \
+    apt-get autoremove --purge -y && apt-get autoclean -y && apt-get clean -y; \
+    rm -rf /var/lib/apt/lists/*; \
+    rm -rf /tmp/* /var/tmp/*
 
-# Install xsl and zip packages
-RUN apt-get update && apt-get -y install libxslt1-dev libzip-dev zlib1g-dev zip \
-    && docker-php-ext-install -j$(nproc) xsl zip
-
-# Install sockets
-RUN CFLAGS="$CFLAGS -D_GNU_SOURCE" docker-php-ext-install sockets
-
+# Install the packages we need to persist. We do this here, because unused packages are removed above
+RUN apt-get update && apt-get -y install \
+    mariadb-client \
+    nano \
+    unzip
 
 
 # set recommended PHP.ini settings
@@ -82,12 +88,16 @@ RUN { \
         echo 'ignore_repeated_source = Off'; \
         echo 'html_errors = Off'; \
     } > /usr/local/etc/php/conf.d/error-logging.ini
+RUN { \
+        echo 'xdebug.mode = debug'; \
+        echo 'xdebug.remote_enable = 1'; \
+        echo 'xdebug.discover_client_host = false'; \
+        echo 'xdebug.client_host = host.docker.internal'; \
+        echo 'xdebug.start_with_request = trigger'; \
+        echo 'xdebug.idekey = PHPSTORM'; \
+    } >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 
 RUN a2enmod rewrite headers expires
-
-
-# Install additional software. We do this here, because unused packages are removed above
-RUN apt-get update && apt-get -y install nano unzip
 
 
 # Copy suporvisor config
@@ -115,22 +125,20 @@ RUN export PATH="$PATH:$HOME/.composer/vendor/bin:/root/.composer/vendor/bin"
 #
 # Install NodeJS
 #
-RUN curl -fsSL https://deb.nodesource.com/setup_12.x | bash -
-RUN apt-get install -y nodejs \
-    && node --version \
-    && export PATH="$PATH:/usr/src/app/node_modules/.bin"
+RUN curl -fsSL https://deb.nodesource.com/setup_14.x | bash -
+RUN apt-get install -y nodejs && node --version
 
 
 #
-# Installing Yarn globally
+# Installing Yarn and n globally
 #
-RUN npm -g install yarn
+RUN npm -g install yarn n
 
 
 #
 # Install some node tools globally
 #
-RUN yarn global add @vue/cli
+RUN yarn global add @ionic/cli @vue/cli cordova vue-native-cli react-native-cli
 
 
 #
@@ -139,7 +147,7 @@ RUN yarn global add @vue/cli
 RUN composer global require laravel/installer
 
 
-ENV PATH "$PATH"
+ENV PATH "$PATH:$HOME/.composer/vendor/bin:/root/.composer/vendor/bin:/usr/src/app/node_modules/.bin"
 
 EXPOSE 80 443
 
