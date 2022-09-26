@@ -3,8 +3,8 @@
 ## Building the "latest" tag
 
 * Check out the `master` branch
-* Run: `docker build --no-cache .`
-* Run: `docker push webwhales/for-laravel-apache`
+* Run: `docker build --no-cache -t webwhales/for-laravel-apache:latest .`
+* Run: `docker push webwhales/for-laravel-apache:latest`
 
 ## Building a specific tag
 
