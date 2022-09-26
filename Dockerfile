@@ -51,16 +51,16 @@ RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-png-dir
         sockets \
         xsl \
         zip
-RUN pecl install redis xdebug && docker-php-ext-enable redis; \
-    yes '' | pecl install imagick && docker-php-ext-enable imagick \
-    pecl install xdebug && docker-php-ext-enable xdebug; \
+RUN pecl install redis xdebug && docker-php-ext-enable redis
+RUN yes '' | pecl install imagick && docker-php-ext-enable imagick
+RUN pecl insall xdebug && docker-php-ext-enable xdebug; \
     echo "xdebug.mode=debug" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
     echo "xdebug.remote_enable=1" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
     echo "xdebug.discover_client_host=false" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
     echo "xdebug.client_host=host.docker.internal" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
     echo "xdebug.start_with_request=trigger" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
-    echo "xdebug.idekey=PHPSTORM" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
-    docker-php-source delete; \
+    echo "xdebug.idekey=PHPSTORM" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
+RUN docker-php-source delete; \
     apt-get autoremove --purge -y && apt-get autoclean -y && apt-get clean -y; \
     rm -rf /var/lib/apt/lists/*; \
     rm -rf /tmp/* /var/tmp/*
@@ -134,7 +134,7 @@ RUN npm -g install yarn n
 #
 # Install some node tools globally
 #
-RUN yarn global add @ionic/cli @vue/cli cordova gulp-cli gulp vue-native-cli react-native-cli
+RUN yarn global add @ionic/cli @vue/cli cordova vue-native-cli react-native-cli
 
 
 #
