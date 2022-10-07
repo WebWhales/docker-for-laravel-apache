@@ -7,8 +7,8 @@ services:
 
   # Apache / PHP
   web:
-    image: webwhales/for-laravel-apache:php8
-    hostname: domain.localhost
+    image: webwhales/for-laravel-apache:php8.1
+    hostname: localhost
     restart: unless-stopped
     volumes:
       - ./.docker/conf/apache-site.conf:/etc/apache2/sites-available/000-default.conf
@@ -38,19 +38,19 @@ services:
       MYSQL_USER: "laravel_db_user"
       MYSQL_PASSWORD: "laravel_db_pass"
     ports:
-      - "3306:3306"
+      - "${DB_PORT_CONTAINER:-3306}:3306"
 
   # phpMyAdmin
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
-    hostname: domain-pma.localhost
+    hostname: pma.localhost
     restart: unless-stopped
     volumes:
       - ./.docker/conf/phpmyadmin-config.php:/etc/phpmyadmin/config.user.inc.php
       - ./.docker/data/phpmyadmin/sessions:/sessions
       - ./.docker/data/phpmyadmin/uploads:/var/uploads
     ports:
-      - "8081:80"
+      - "${DB_PORT_PHPMYADMIN:-8081}:80"
     environment:
       PMA_ARBITRARY: "1"
       PMA_HOST: "db"
