@@ -54,7 +54,7 @@ To use Xdebug with PHPUnit:
   * `composer`
   * `nano`
   * `nodejs`, `npm`, `yarn` and `n`
-  * `@ionic/cli`, `@vue/cli`, `cordova`, `vue-native-cli` and `react-native-cli`
+  * `@vue/cli`
   * `laravel/installer`
   * `supervisor`
 * Files you put in the `.docker/data/phpmyadmin/uploads` folder become available for importing within phpMyAdmin
