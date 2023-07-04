@@ -124,7 +124,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 #
 # Install NodeJS
 #
-RUN curl -fsSL https://deb.nodesource.com/setup_14.x | bash -
+RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash -
 RUN apt-get install -y nodejs && node --version
 
 
@@ -137,7 +137,7 @@ RUN npm -g install yarn n
 #
 # Install some node tools globally
 #
-RUN yarn global add @ionic/cli @vue/cli cordova vue-native-cli react-native-cli
+RUN yarn global add @vue/cli
 
 
 #
