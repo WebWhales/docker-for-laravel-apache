@@ -125,7 +125,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 # Install NodeJS
 #
 RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash -
-RUN apt-get install -y nodejs && node --version
+RUN apt-get install -y nodejs npm && node --version
 
 
 #
