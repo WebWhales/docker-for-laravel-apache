@@ -7,7 +7,7 @@ services:
 
   # Apache / PHP
   web:
-    image: webwhales/for-laravel-apache:php8
+    image: webwhales/for-laravel-apache:php8.2
     hostname: localhost
     restart: unless-stopped
     volumes:
