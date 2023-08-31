@@ -37,8 +37,6 @@ services:
       MYSQL_DATABASE: "laravel_db"
       MYSQL_USER: "laravel_db_user"
       MYSQL_PASSWORD: "laravel_db_pass"
-    ports:
-      - "${DB_PORT_CONTAINER:-3306}:3306"
 
   # phpMyAdmin
   phpmyadmin:
