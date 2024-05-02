@@ -54,9 +54,8 @@ RUN docker-php-ext-configure gd --enable-gd --with-freetype --with-jpeg --with-w
       sockets \
       xsl \
       zip
-RUN pecl install redis xdebug && docker-php-ext-enable redis
-RUN yes '' | pecl install imagick && docker-php-ext-enable imagick
-RUN docker-php-ext-enable xdebug
+RUN pecl channel-update pecl.php.net && pecl install redis xdebug imagick
+RUN docker-php-ext-enable redis imagick xdebug
 RUN docker-php-source delete; \
     apt-get autoremove --purge -y && apt-get autoclean -y && apt-get clean -y; \
     rm -rf /var/lib/apt/lists/*; \
@@ -125,20 +124,15 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 #
 # Install NodeJS
 #
-RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash -
-RUN apt-get install -y nodejs npm && node --version
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
+RUN apt-get install -y nodejs && node --version
+RUN npm -g install corepack n
 
 
 #
 # Installing Yarn and n globally
 #
-RUN npm -g install yarn n
-
-
-#
-# Install some node tools globally
-#
-RUN yarn global add @vue/cli
+RUN corepack enable && yarn set version stable && yarn set version 4.x
 
 
 #
