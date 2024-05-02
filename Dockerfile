@@ -53,7 +53,7 @@ RUN docker-php-ext-configure gd --enable-gd --with-freetype --with-jpeg --with-w
       soap \
       sockets \
       xsl \
-      zip \
+      zip
 RUN pecl channel-update pecl.php.net && pecl install redis xdebug imagick
 RUN docker-php-ext-enable redis imagick xdebug
 RUN docker-php-source delete; \
