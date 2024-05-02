@@ -15,6 +15,7 @@ services:
       - ./.docker/conf/php-site.ini:/usr/local/etc/php/conf.d/site.ini
       - ./.docker/conf/supervisor-site.conf:/etc/supervisor/conf.d/site.conf
       - ./.docker/logs/apache:/var/log/apache2
+      - ./.docker/.bashrc:/root/.bashrc
       - ./:/var/www/html
     ports:
       - "8080:80"

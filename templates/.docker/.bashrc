@@ -1,0 +1,27 @@
+alias js-d="yarn dev"
+alias js-b="yarn prod"
+alias ll="ls -lhA --color"
+
+alias pa="php artisan"
+alias pa-key="php artisan key:generate"
+alias pad-s="php artisan db:seed"
+alias pam="php artisan migrate"
+alias pam-f="php artisan migrate:fresh"
+alias pam-fs="php artisan migrate:fresh --seed"
+alias pam-r="php artisan migrate:rollback"
+alias par-l="php artisan route:list"
+alias pat="php artisan test"
+alias pat-f="php artisan test --filter"
+
+alias c-p="composer pint"
+alias c-c="composer check"
+alias c-s="composer phpstan"
+alias c-ide="composer ide"
+
+alias xd-on="export XDEBUG_TRIGGER=1"
+alias xd-off="unset XDEBUG_TRIGGER"
+
+alias per-f="find storage bootstrap/cache -type f -print0 | xargs -0 chmod g=rw,u+rw,o=r"
+alias per-d="find storage bootstrap/cache -type d -print0 | xargs -0 chmod 775"
+alias per-g="chown -R :www-data storage bootstrap/cache"
+alias own-l="chown -R 1000:www-data database app resources routes config public lang tests"
