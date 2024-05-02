@@ -53,9 +53,8 @@ RUN docker-php-ext-configure gd --enable-gd --with-freetype --with-jpeg --with-w
       sockets \
       xsl \
       zip
-RUN pecl install redis xdebug && docker-php-ext-enable redis
-RUN yes '' | pecl install imagick && docker-php-ext-enable imagick
-RUN docker-php-ext-enable xdebug
+RUN pecl channel-update pecl.php.net && pecl install redis xdebug imagick
+RUN docker-php-ext-enable redis imagick xdebug
 RUN docker-php-source delete; \
     apt-get autoremove --purge -y && apt-get autoclean -y && apt-get clean -y; \
     rm -rf /var/lib/apt/lists/*; \
