@@ -124,20 +124,15 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 #
 # Install NodeJS
 #
-RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash -
-RUN apt-get install -y nodejs npm && node --version
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
+RUN apt-get install -y nodejs && node --version
+RUN npm -g install corepack n
 
 
 #
 # Installing Yarn and n globally
 #
-RUN npm -g install yarn n
-
-
-#
-# Install some node tools globally
-#
-RUN yarn global add @vue/cli
+RUN corepack enable && yarn set version stable && yarn set version 4.x
 
 
 #
