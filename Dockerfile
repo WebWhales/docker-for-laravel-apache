@@ -124,20 +124,15 @@ RUN export PATH="$PATH:$HOME/.composer/vendor/bin:/root/.composer/vendor/bin"
 #
 # Install NodeJS
 #
-RUN curl -fsSL https://deb.nodesource.com/setup_14.x | bash -
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
 RUN apt-get install -y nodejs && node --version
+RUN npm -g install corepack n
 
 
 #
 # Installing Yarn and n globally
 #
-RUN npm -g install yarn n
-
-
-#
-# Install some node tools globally
-#
-RUN yarn global add @ionic/cli @vue/cli cordova vue-native-cli react-native-cli
+RUN corepack enable && yarn set version stable && yarn set version 4.x
 
 
 #
