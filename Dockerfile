@@ -54,7 +54,8 @@ RUN docker-php-ext-configure gd --enable-gd --with-freetype --with-jpeg --with-w
       sockets \
       xsl \
       zip
-RUN pecl channel-update pecl.php.net && pecl install redis xdebug imagick
+RUN pecl channel-update pecl.php.net && pecl install redis xdebug
+RUN pecl install imagick
 RUN docker-php-ext-enable redis imagick xdebug
 RUN docker-php-source delete; \
     apt-get autoremove --purge -y && apt-get autoclean -y && apt-get clean -y; \
@@ -124,7 +125,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 #
 # Install NodeJS
 #
-RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
 RUN apt-get install -y nodejs && node --version
 RUN npm -g install corepack n
 
@@ -141,7 +142,7 @@ RUN corepack enable && yarn set version stable && yarn set version 4.x
 RUN composer global require laravel/installer
 
 
-ENV PATH "$PATH:$HOME/.composer/vendor/bin:/root/.composer/vendor/bin:/usr/src/app/node_modules/.bin"
+ENV PATH="$PATH:$HOME/.composer/vendor/bin:/root/.composer/vendor/bin:/usr/src/app/node_modules/.bin"
 
 EXPOSE 80 443
 
