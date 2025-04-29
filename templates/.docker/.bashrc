@@ -21,10 +21,8 @@ alias coide="composer ide"
 alias xdon="export XDEBUG_TRIGGER=1"
 alias xdoff="unset XDEBUG_TRIGGER"
 
-LARAVEL_FOLDERS="app bootstrap config database public resources routes storage tests"
-
-alias perf="find ${LARAVEL_FOLDERS} -type f -print0 | xargs -0 chmod g+rw,u+rw,o+rw"
-alias perd="find ${LARAVEL_FOLDERS} -type d -print0 | xargs -0 chmod 777"
-alias perg="chown -R 1000:www-data ${LARAVEL_FOLDERS}"
+alias perf='find ${LARAVEL_FOLDERS} -type f -print0 | xargs -0 chmod +rw'
+alias perd='find ${LARAVEL_FOLDERS} -type d -print0 | xargs -0 chmod 777'
+alias perg='chown -R 1000:www-data ${LARAVEL_FOLDERS}'
 alias pera="perf; perd; perg"
 
