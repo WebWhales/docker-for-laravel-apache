@@ -10,6 +10,8 @@ services:
     image: webwhales/for-laravel-apache:php8.2
     hostname: localhost
     restart: unless-stopped
+    environment:
+      - LARAVEL_FOLDERS=app bootstrap config database public resources routes storage tests
     volumes:
       - ./.docker/conf/apache-site.conf:/etc/apache2/sites-available/000-default.conf
       - ./.docker/conf/php-site.ini:/usr/local/etc/php/conf.d/site.ini
