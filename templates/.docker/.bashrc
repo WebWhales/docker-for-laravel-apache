@@ -21,7 +21,7 @@ alias coide="composer ide"
 alias xdon="export XDEBUG_TRIGGER=1"
 alias xdoff="unset XDEBUG_TRIGGER"
 
-alias perf='find ${LARAVEL_FOLDERS} -type f -print0 | xargs -0 chmod +rw'
+alias perf='find ${LARAVEL_FOLDERS} -type f -print0 | xargs -0 chmod a+rw'
 alias perd='find ${LARAVEL_FOLDERS} -type d -print0 | xargs -0 chmod 777'
 alias perg='chown -R 1000:www-data ${LARAVEL_FOLDERS}'
 alias pera="perf; perd; perg"
