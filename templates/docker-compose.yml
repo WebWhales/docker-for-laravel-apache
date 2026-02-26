@@ -12,6 +12,7 @@ services:
     restart: unless-stopped
     environment:
       - LARAVEL_FOLDERS=app bootstrap config database public resources routes storage tests
+      - NODE_VERSION=${NODE_VERSION:-}
     volumes:
       - ./.docker/conf/apache-site.conf:/etc/apache2/sites-available/000-default.conf
       - ./.docker/conf/php-site.ini:/usr/local/etc/php/conf.d/site.ini
@@ -27,7 +28,7 @@ services:
 
   # MySQL
   db:
-    image: mariadb:10.6
+    image: mariadb:11.4
     restart: unless-stopped
     volumes:
       - ./.docker/conf/mysql/docker-entrypoint-initdb.d/create_test_database.sql:/docker-entrypoint-initdb.d/create_test_database.sql
