@@ -8,7 +8,6 @@ RUN apt-get update && apt-get -y install \
     gcc \
     git \
     libbz2-dev \
-    libc-client-dev \
     libc-dev \
     libfreetype6-dev \
     libjpeg-dev \
@@ -53,9 +52,9 @@ RUN docker-php-ext-configure gd --enable-gd --with-freetype --with-jpeg --with-w
       soap \
       sockets \
       xsl \
-      zip \
-      ftp
-RUN pecl channel-update pecl.php.net && pecl install redis xdebug imagick
+      zip
+RUN pecl channel-update pecl.php.net && pecl install redis xdebug
+RUN pecl install imagick
 RUN docker-php-ext-enable redis imagick xdebug
 RUN docker-php-source delete; \
     apt-get autoremove --purge -y && apt-get autoclean -y && apt-get clean -y; \
@@ -66,8 +65,9 @@ RUN docker-php-source delete; \
 RUN apt-get update && apt-get -y install \
     mariadb-client \
     nano \
-    unzip
-
+    unzip \
+    xz-utils \
+    ca-certificates
 
 # set recommended PHP.ini settings
 # see https://secure.php.net/manual/en/opcache.installation.php
@@ -100,10 +100,8 @@ RUN { \
 
 RUN a2enmod rewrite headers expires
 
-
 # Copy suporvisor config
 COPY config/supervisor/supervisord.conf /etc/supervisord.conf
-
 
 # Add an SSL certificate for *.localhost
 COPY config/ssl/localhost.ext /etc/ssl/localhost.ext
@@ -115,37 +113,74 @@ RUN openssl req -x509 \
     -extensions EXT \
     -config /etc/ssl/localhost.ext
 
-
 #
 # Install Composer
 #
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-
 #
 # Install NodeJS
 #
-RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
 RUN apt-get install -y nodejs && node --version
 RUN npm -g install corepack n
 
+RUN cat > /usr/local/bin/docker-entrypoint.sh <<'EOF'
+#!/bin/sh
+
+set -e
+
+if [ -n "${NODE_VERSION:-}" ]; then
+  current="$(node -v 2>/dev/null || true)"
+  need_install=1
+
+  case "$NODE_VERSION" in
+    lts|stable|latest)
+      need_install=1
+      ;;
+    v*.*.*|*.*.*)
+      case "$NODE_VERSION" in
+        v*) desired="$NODE_VERSION" ;;
+        *) desired="v$NODE_VERSION" ;;
+      esac
+
+      if [ "$current" = "$desired" ]; then
+        need_install=0
+      fi
+      ;;
+    *)
+      if printf '%s' "$current" | grep -q "^v${NODE_VERSION}\\."; then
+        need_install=0
+      fi
+      ;;
+  esac
+
+  if [ "$need_install" -eq 1 ]; then
+    n "$NODE_VERSION"
+    corepack enable >/dev/null 2>&1 || true
+  fi
+fi
+
+exec "$@"
+EOF
+
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 #
 # Installing Yarn and n globally
 #
 RUN corepack enable && yarn set version stable && yarn set version 4.x
 
-
 #
 # Install Laravel installer
 #
 RUN composer global require laravel/installer
 
-
-ENV PATH "$PATH:$HOME/.composer/vendor/bin:/root/.composer/vendor/bin:/usr/src/app/node_modules/.bin"
+ENV PATH="$PATH:/root/.config/composer/vendor/bin"
 
 EXPOSE 80 443
 
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 
 # Let supervisord start apache
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
