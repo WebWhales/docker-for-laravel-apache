@@ -1,4 +1,4 @@
-FROM php:8-apache
+FROM php:8.5-apache
 
 # Install the packages we need
 RUN apt-get update && apt-get -y install \
