@@ -124,47 +124,6 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
 RUN apt-get install -y nodejs && node --version
 RUN npm -g install corepack n
 
-RUN cat > /usr/local/bin/docker-entrypoint.sh <<'EOF'
-#!/bin/sh
-
-set -e
-
-if [ -n "${NODE_VERSION:-}" ]; then
-  current="$(node -v 2>/dev/null || true)"
-  need_install=1
-
-  case "$NODE_VERSION" in
-    lts|stable|latest)
-      need_install=1
-      ;;
-    v*.*.*|*.*.*)
-      case "$NODE_VERSION" in
-        v*) desired="$NODE_VERSION" ;;
-        *) desired="v$NODE_VERSION" ;;
-      esac
-
-      if [ "$current" = "$desired" ]; then
-        need_install=0
-      fi
-      ;;
-    *)
-      if printf '%s' "$current" | grep -q "^v${NODE_VERSION}\\."; then
-        need_install=0
-      fi
-      ;;
-  esac
-
-  if [ "$need_install" -eq 1 ]; then
-    n "$NODE_VERSION"
-    corepack enable >/dev/null 2>&1 || true
-  fi
-fi
-
-exec "$@"
-EOF
-
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
-
 #
 # Installing Yarn and n globally
 #
@@ -174,6 +133,12 @@ RUN corepack enable && yarn set version stable && yarn set version 4.x
 # Install Laravel installer
 #
 RUN composer global require laravel/installer
+
+#
+# Setup entrypoint
+#
+COPY config/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 ENV PATH="$PATH:/root/.config/composer/vendor/bin"
 
