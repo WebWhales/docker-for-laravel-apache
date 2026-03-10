@@ -2,6 +2,9 @@
 
 set -e
 
+#
+# Install another node version if specified as an environment variable
+#
 if [ -n "${NODE_VERSION:-}" ]; then
   current="$(node -v 2>/dev/null || true)"
   need_install=1
@@ -32,5 +35,11 @@ if [ -n "${NODE_VERSION:-}" ]; then
     corepack enable >/dev/null 2>&1 || true
   fi
 fi
+
+#
+# Add the html folder as a trusted git folder to suppress "dubious ownership" warnings
+#
+git config --global --add safe.directory /var/www/html
+
 
 exec "$@"
