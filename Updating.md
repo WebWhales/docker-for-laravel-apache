@@ -3,6 +3,7 @@
 ## Building the "latest" tag
 
 * Check out the `master` branch
+* Run: `dos2unix config/docker-entrypoint.sh`
 * Run: `docker build --no-cache -t webwhales/for-laravel-apache:latest .`
 * Run: `docker push webwhales/for-laravel-apache:latest`
 
@@ -11,5 +12,6 @@
 *Replace [tag] with an actual tag, like `php8.1`*
 
 * Check out the branch corresponding with the tag, like `php8.1` 
+* Run: `dos2unix config/docker-entrypoint.sh`
 * Run: `docker build --no-cache -t webwhales/for-laravel-apache:[tag] .`
 * Run: `docker push webwhales/for-laravel-apache:[tag]`
