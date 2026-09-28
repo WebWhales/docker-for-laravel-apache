@@ -9,6 +9,7 @@ services:
     hostname: localhost
     restart: unless-stopped
     environment:
+      - BOOST_PHP_EXECUTABLE_PATH=docker compose exec web php
       - LARAVEL_FOLDERS=app bootstrap config database lang public resources routes storage tests
       - NODE_VERSION=${NODE_VERSION:-stable}
     volumes:
