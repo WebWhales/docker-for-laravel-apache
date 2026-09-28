@@ -10,7 +10,7 @@ services:
     restart: unless-stopped
     environment:
       - BOOST_PHP_EXECUTABLE_PATH=docker compose exec web php
-      - LARAVEL_FOLDERS=app bootstrap config database lang public resources routes storage tests
+      - LARAVEL_FOLDERS=app bootstrap config database public resources routes storage tests
       - NODE_VERSION=${NODE_VERSION:-stable}
     volumes:
       - ./.docker/conf/apache-site.conf:/etc/apache2/sites-available/000-default.conf
