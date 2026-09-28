@@ -1,5 +1,3 @@
-version: '3.7'
-
 services:
   # ==============================================
   # Laravel Application Containers
@@ -11,8 +9,9 @@ services:
     hostname: localhost
     restart: unless-stopped
     environment:
+      - BOOST_PHP_EXECUTABLE_PATH=docker compose exec web php
       - LARAVEL_FOLDERS=app bootstrap config database public resources routes storage tests
-      - NODE_VERSION=${NODE_VERSION:-}
+      - NODE_VERSION=${NODE_VERSION:-stable}
     volumes:
       - ./.docker/conf/apache-site.conf:/etc/apache2/sites-available/000-default.conf
       - ./.docker/conf/php-site.ini:/usr/local/etc/php/conf.d/site.ini
